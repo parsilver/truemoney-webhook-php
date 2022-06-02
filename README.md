@@ -11,7 +11,7 @@
 ### System Requirements
 ```json
 {
-    "php": "^7.2||^8.0"
+    "php": "^7.3||^8.0"
 }
 ```
 
