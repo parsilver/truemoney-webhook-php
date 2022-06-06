@@ -1,10 +1,10 @@
 # Truemoney webhook gateway - PHP
 
+ขอบคุณ [K'DearTanakorn](https://github.com/DearTanakorn)
 
-เราได้ทำการ Fork มาจาก Repo: [DearTanakorn](https://github.com/DearTanakorn/truemoney-webhook-gateway) 
+เราได้ทำการ Fork มาจาก Repo: [DearTanakorn/truemoney-webhook-gateway](https://github.com/DearTanakorn/truemoney-webhook-gateway)
+
 และให้ใช้งานร่วมกับ PHP Server ได้
-
-(ขอบคุณ [K'DearTanakorn](https://github.com/DearTanakorn))
 
 ---
 
@@ -43,12 +43,13 @@ $data = $postman->capture();
 //    'message' => 'ค่าไอเทม',
 //    'lat' => 1653538793,
 // ]
-$data->toArray();
+$data->asArray();
 ```
 
 
 Sometime, you may want to get some fields from incoming request.
 You can use `$data->field_name` to get the value of the field.
+
 For example:
 ```php
 $data->event_type; // string
