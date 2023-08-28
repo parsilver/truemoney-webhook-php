@@ -1,5 +1,10 @@
 # Truemoney webhook gateway - PHP
 
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/farzai/truemoney-webhook.svg?style=flat-square)](https://packagist.org/packages/farzai/truemoney-webhook)
+[![Tests](https://img.shields.io/github/actions/workflow/status/parsilver/truemoney-webhook-php/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/parsilver/truemoney-webhook-php/actions/workflows/run-tests.yml)
+[![codecov](https://codecov.io/gh/parsilver/truemoney-webhook-php/branch/main/graph/badge.svg)](https://codecov.io/gh/parsilver/truemoney-webhook-php)
+[![Total Downloads](https://img.shields.io/packagist/dt/farzai/truemoney-webhook.svg?style=flat-square)](https://packagist.org/packages/farzai/truemoney-webhook)
+
 ขอบคุณ [K'DearTanakorn](https://github.com/DearTanakorn)
 
 เราได้ทำการ Fork มาจาก Repo: [DearTanakorn/truemoney-webhook-gateway](https://github.com/DearTanakorn/truemoney-webhook-gateway)
@@ -9,11 +14,7 @@
 ---
 
 ### System Requirements
-```json
-{
-    "php": "^7.3||^8.0"
-}
-```
+- PHP 8.0 or higher
 
 ### Setup
 ```bash

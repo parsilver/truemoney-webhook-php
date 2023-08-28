@@ -1,14 +1,20 @@
 {
     "name": "farzai/truemoney-webhook",
+    "homepage": "https://github.com/parsilver/truemoney-webhook-php",
     "require": {
-        "php": "^7.3||^8.0",
-        "psr/http-message": "^1.0",
+        "php": "^8.0",
+        "psr/http-message": "^1.0|^2.0",
         "nyholm/psr7-server": "^1.0",
         "nyholm/psr7": "^1.5",
         "firebase/php-jwt": "^6.2"
     },
     "require-dev": {
-        "phpunit/phpunit": "^9.5"
+        "pestphp/pest": "^1.20",
+        "laravel/pint": "^1.2",
+        "spatie/ray": "^1.28",
+        "phpstan/extension-installer": "^1.1",
+        "phpstan/phpstan-deprecation-rules": "^1.0",
+        "phpstan/phpstan-phpunit": "^1.0"
     },
     "license": "MIT",
     "autoload": {
@@ -22,12 +28,24 @@
         }
     },
     "scripts": {
-        "test": "vendor/bin/phpunit"
+        "test": "vendor/bin/pest",
+        "test-coverage": "vendor/bin/pest --coverage",
+        "format": "vendor/bin/pint",
+        "analyse": "vendor/bin/phpstan analyse"
     },
     "authors": [
         {
             "name": "PA",
             "role": "DevOps"
         }
-    ]
+    ],
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true,
+            "phpstan/extension-installer": true
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
 }
