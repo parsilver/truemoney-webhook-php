@@ -44,7 +44,6 @@ it('should parse data from incoming request success', function () {
     expect($entity->lat)->toBe(1653538793);
 });
 
-
 it('can encode to json string success', function () {
     $data = [
         'event_type' => 'P2P',
