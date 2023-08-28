@@ -2,7 +2,7 @@
     "name": "farzai/truemoney-webhook",
     "homepage": "https://github.com/parsilver/truemoney-webhook-php",
     "require": {
-        "php": "^7.4||^8.0",
+        "php": "^8.0",
         "psr/http-message": "^1.0|^2.0",
         "nyholm/psr7-server": "^1.0",
         "nyholm/psr7": "^1.5",
