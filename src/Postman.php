@@ -3,17 +3,16 @@
 namespace Farzai\TruemoneyWebhook;
 
 use Farzai\TruemoneyWebhook\Entity\Message;
+use Firebase\JWT\JWT;
+use Firebase\JWT\Key;
+use InvalidArgumentException;
 use Nyholm\Psr7\Factory\Psr17Factory;
 use Nyholm\Psr7Server\ServerRequestCreator;
 use Psr\Http\Message\ServerRequestInterface;
 use RuntimeException;
-use InvalidArgumentException;
-use Firebase\JWT\JWT;
-use Firebase\JWT\Key;
 
 class Postman
 {
-
     private array $config = [
         // The key used to sign the JWT.
         'secret' => null,
@@ -24,8 +23,8 @@ class Postman
 
     /**
      * Postman constructor.
-     * 
-     * @param array $config
+     *
+     * @param  array  $config
      * Notes: Config are required keys: 'secret',
      * Optional keys: 'alg',
      */
@@ -33,7 +32,7 @@ class Postman
     {
         // Validate config
         // Check secret key is required
-        if (!isset($config['secret']) || empty($config['secret'])) {
+        if (! isset($config['secret']) || empty($config['secret'])) {
             throw new InvalidArgumentException('Invalid config. "secret" is required.');
         }
 
@@ -43,15 +42,14 @@ class Postman
 
     /**
      * Capture request from Truemoney webhook.
-     * 
+     *
      * @throw RuntimeException
-     * 
-     * @param ServerRequestInterface|null $request
+     *
      * @return Message
      */
     public function capture(ServerRequestInterface $request = null)
     {
-        if (!$request) {
+        if (! $request) {
             $factory = new Psr17Factory();
 
             $creator = new ServerRequestCreator(
@@ -73,10 +71,10 @@ class Postman
 
     /**
      * Decode jwt and return message entity.
-     * 
-     * @param ServerRequestInterface $request
-     * 
+     *
+     *
      * @return Message
+     *
      * @throws RuntimeException
      */
     public function parseMessageFromRequest(ServerRequestInterface $request)
@@ -85,7 +83,7 @@ class Postman
             throw new RuntimeException('Invalid content type.');
         }
 
-        if (!$request->getBody()->getContents()) {
+        if (! $request->getBody()->getContents()) {
             throw new RuntimeException('Invalid request body.');
         }
 
@@ -96,15 +94,15 @@ class Postman
 
     /**
      * Parse all input data to message entity.
-     * 
-     * @param array $jsonData
-     * 
+     *
+     *
      * @return Message
+     *
      * @throws RuntimeException
      */
     public function parseMessageFromJsonArray(array $jsonData)
     {
-        if (!$jsonData || !$jsonData['message']) {
+        if (! $jsonData || ! $jsonData['message']) {
             throw new RuntimeException('Invalid request body.');
         }
 

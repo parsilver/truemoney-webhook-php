@@ -7,18 +7,16 @@ use Psr\Http\Message\ServerRequestInterface;
 
 abstract class AbstractEntity implements JsonSerializable
 {
-
     /**
      * Raw data.
-     * 
+     *
      * @var array|null
      */
     protected $data;
 
     /**
      * Map data to entity from array.
-     * 
-     * @param array $data
+     *
      * @return static
      */
     public static function fromArray(array $data)
@@ -28,19 +26,16 @@ abstract class AbstractEntity implements JsonSerializable
 
     /**
      * Map data to entity from request.
-     * 
-     * @param ServerRequestInterface $request
+     *
      * @return static
      */
     public static function fromRequest(ServerRequestInterface $request)
     {
-        return static::fromArray(@json_decode((string)$request->getBody(), true) ?: []);
+        return static::fromArray(@json_decode((string) $request->getBody(), true) ?: []);
     }
 
     /**
-     * Entity data 
-     * 
-     * @param array $data
+     * Entity data
      */
     public function __construct(array $data = [])
     {
@@ -49,7 +44,7 @@ abstract class AbstractEntity implements JsonSerializable
 
     /**
      * Convert entity to json string.
-     * 
+     *
      * @return string
      */
     public function asJson()
@@ -59,7 +54,7 @@ abstract class AbstractEntity implements JsonSerializable
 
     /**
      * Convert entity to array.
-     * 
+     *
      * @return array
      */
     public function asArray()
@@ -70,13 +65,12 @@ abstract class AbstractEntity implements JsonSerializable
     /**
      * @return array
      */
-    public function jsonSerialize()
+    public function jsonSerialize(): mixed
     {
         return $this->data;
     }
 
     /**
-     * @param $name
      * @return mixed
      */
     public function __get($name)
@@ -88,10 +82,6 @@ abstract class AbstractEntity implements JsonSerializable
         return $this->data[$name] ?? null;
     }
 
-    /**
-     * @param $name
-     * @param $value
-     */
     public function __set($name, $value)
     {
         $this->data[$name] = $value;
