@@ -58,6 +58,9 @@ it('should parse data from incoming request success', function () {
     expect($entity->sender_mobile)->toBe('0988882222');
     expect($entity->message)->toBe('ค่าไอเทม');
     expect($entity->lat)->toBe(1653538793);
+
+    expect((string) $entity)->toBe(json_encode($payload));
+
 });
 
 it('can encode to json string success', function () {
@@ -75,7 +78,7 @@ it('can encode to json string success', function () {
     expect($entity->asJson())->toBe(json_encode($data));
 });
 
-it('can get array data success', function () {
+it('can get and set array data success', function () {
     $data = [
         'event_type' => 'P2P',
         'received_time' => '2022-01-31T13:02:23+0700',
@@ -88,4 +91,9 @@ it('can get array data success', function () {
     $entity = new Message($data);
 
     expect($entity->asArray())->toBe($data);
+
+    // Set new data
+    $entity->event_type = 'P2M';
+
+    expect($entity->event_type)->toBe('P2M');
 });
