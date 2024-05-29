@@ -3,7 +3,6 @@
 namespace Farzai\TruemoneyWebhook\Entity;
 
 use JsonSerializable;
-use Psr\Http\Message\ServerRequestInterface;
 
 abstract class AbstractEntity implements JsonSerializable
 {
@@ -13,26 +12,6 @@ abstract class AbstractEntity implements JsonSerializable
      * @var array|null
      */
     protected $data;
-
-    /**
-     * Map data to entity from array.
-     *
-     * @return static
-     */
-    public static function fromArray(array $data)
-    {
-        return new static($data);
-    }
-
-    /**
-     * Map data to entity from request.
-     *
-     * @return static
-     */
-    public static function fromRequest(ServerRequestInterface $request)
-    {
-        return static::fromArray(@json_decode((string) $request->getBody(), true) ?: []);
-    }
 
     /**
      * Entity data

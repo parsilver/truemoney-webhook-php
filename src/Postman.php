@@ -2,12 +2,10 @@
 
 namespace Farzai\TruemoneyWebhook;
 
+use Farzai\TruemoneyWebhook\Contracts\MessageParser as MessageParserContract;
+use Farzai\TruemoneyWebhook\Contracts\ServerRequestFactory as ServerRequestFactoryContract;
 use Farzai\TruemoneyWebhook\Entity\Message;
-use Firebase\JWT\JWT;
-use Firebase\JWT\Key;
 use InvalidArgumentException;
-use Nyholm\Psr7\Factory\Psr17Factory;
-use Nyholm\Psr7Server\ServerRequestCreator;
 use Psr\Http\Message\ServerRequestInterface;
 use RuntimeException;
 
@@ -21,23 +19,23 @@ class Postman
         'alg' => 'HS256',
     ];
 
+    private ServerRequestFactoryContract $serverRequestFactory;
+
+    private MessageParserContract $messageParser;
+
     /**
      * Postman constructor.
      *
      * @param  array  $config
-     * Notes: Config are required keys: 'secret',
-     * Optional keys: 'alg',
+     *                         Notes: Config are required keys: 'secret',
+     *                         Optional keys: 'alg',
      */
     public function __construct(array $config)
     {
-        // Validate config
-        // Check secret key is required
-        if (! isset($config['secret']) || empty($config['secret'])) {
-            throw new InvalidArgumentException('Invalid config. "secret" is required.');
-        }
-
-        // Set config
         $this->config = array_merge($this->config, $config);
+        $this->messageParser = new MessageParser($this->config);
+
+        $this->setServerRequestFactory(new ServerRequestFactory);
     }
 
     /**
@@ -47,70 +45,67 @@ class Postman
      *
      * @return Message
      */
-    public function capture(ServerRequestInterface $request = null)
+    public function capture(?ServerRequestInterface $request = null)
     {
+        $this->validateConfig($this->getConfig());
+
         if (! $request) {
-            $factory = new Psr17Factory();
-
-            $creator = new ServerRequestCreator(
-                $factory,
-                $factory,
-                $factory,
-                $factory
-            );
-
-            $request = $creator->fromGlobals();
+            $request = $this->serverRequestFactory->create();
         }
 
+        $this->validateRequest($request);
+
+        $jsonData = @json_decode($request->getBody()->getContents(), true) ?: [];
+
+        return $this->messageParser->parse($jsonData);
+    }
+
+    public function setServerRequestFactory(ServerRequestFactoryContract $serverRequestFactory)
+    {
+        $this->serverRequestFactory = $serverRequestFactory;
+
+        return $this;
+    }
+
+    public function getServerRequestFactory(): ServerRequestFactoryContract
+    {
+        return $this->serverRequestFactory;
+    }
+
+    public function setConfig(array $config)
+    {
+        $this->config = array_merge($this->config, $config);
+
+        return $this;
+    }
+
+    public function getConfig(): array
+    {
+        return $this->config;
+    }
+
+    private function validateConfig(array $config)
+    {
+        // Check secret key is required
+        if (! isset($config['secret']) || empty($config['secret'])) {
+            throw new InvalidArgumentException('Invalid config. "secret" is required.');
+        }
+    }
+
+    private function validateRequest(ServerRequestInterface $request)
+    {
         if ($request->getMethod() !== 'POST') {
             throw new RuntimeException('Invalid request method.');
         }
 
-        return $this->parseMessageFromRequest($request);
-    }
+        $contentType = $request->getHeader('Content-Type')[0] ?? '';
 
-    /**
-     * Decode jwt and return message entity.
-     *
-     *
-     * @return Message
-     *
-     * @throws RuntimeException
-     */
-    public function parseMessageFromRequest(ServerRequestInterface $request)
-    {
-        if (count($request->getHeader('Content-Type')) === 0 || $request->getHeader('Content-Type')[0] !== 'application/json') {
+        if ($contentType !== 'application/json') {
             throw new RuntimeException('Invalid content type.');
         }
 
-        if (! $request->getBody()->getContents()) {
+        if (empty($request->getBody()->getContents())) {
             throw new RuntimeException('Invalid request body.');
         }
-
-        $jsonData = @json_decode($request->getBody()->getContents(), true) ?: [];
-
-        return $this->parseMessageFromJsonArray($jsonData);
-    }
-
-    /**
-     * Parse all input data to message entity.
-     *
-     *
-     * @return Message
-     *
-     * @throws RuntimeException
-     */
-    public function parseMessageFromJsonArray(array $jsonData)
-    {
-        if (! $jsonData || ! $jsonData['message']) {
-            throw new RuntimeException('Invalid request body.');
-        }
-
-        $data = JWT::decode($jsonData['message'], new Key($this->config['secret'], $this->config['alg']));
-
-        // Convert to array
-        $data = (array) $data;
-
-        return Message::fromArray($data);
     }
 }

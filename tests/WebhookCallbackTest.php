@@ -45,6 +45,8 @@ it('should error if invalid config', function () {
     $postman = new Postman([
         'secret' => '',
     ]);
+
+    $postman->capture();
 })->throws(InvalidArgumentException::class, 'Invalid config. "secret" is required.');
 
 it('should error if invalid method', function () {
